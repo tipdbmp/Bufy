@@ -1,0 +1,17 @@
+{
+    "perl" : "6.c",
+    "name" : "Bufy",
+    "version" : "0.1.0",
+    "description" : "Read/Write native types from/to buf8 buffers.",
+    "authors" : [ "tipdbmp" ],
+    "license" : "Unlicense",
+    "support": {
+        "license": "http://www.unlicense.org"
+      },
+    "provides" : {
+        "Bufy" : "lib/Bufy.pm6"
+    },
+    "depends" : [ ],
+    "resources" : [ ],
+    "source-url" : "git://github.com/tipdbmp/Bufy.git"
+}
