@@ -156,3 +156,45 @@ Bufy - read/write native types from/to buf8 buffers
     my buf8 $buf .= new;
     write-type($buf, Bar.new);
     say $buf; # Buf[uint8]:0x<01 02>
+
+### versioning
+
+    use Bufy :constants, :functions, :Serializable, :no-serialize;
+
+    class FooBase is Serializable {}
+    class Foo_0x01 is FooBase {
+        my $.version = 0x01;
+
+        has Str $.a = 'ABCD';
+    }
+    class Foo_0x02 is FooBase {
+       my $.version = 0x02;
+
+        has Str $.a = 'ABCD';
+        has f32 $.b = 1.0e0;
+    }
+    class Foo is Foo_0x01 {}
+
+    constant Write-File = True;
+
+    if Write-File {
+        my buf8 $buf .= new;
+
+        write-type($buf, Foo.new);
+        my FooBase $custom = Foo.new(a => 'WXYZ');
+        write-type($buf, $custom);
+
+        'my-file.bin'.IO.spurt($buf, :bin);
+        return;
+    }
+
+    # read file
+
+    my buf8 $buf = 'my-file.bin'.IO.slurp(:bin);
+
+    my u64 $offset = 0;
+    my FooBase $foo1 = read-type($buf, Foo, $offset);
+    my FooBase $foo2 = read-type($buf, Foo, $offset);
+
+    say $foo1;
+    say $foo2;
